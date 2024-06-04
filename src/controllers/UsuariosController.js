@@ -42,6 +42,35 @@ async function RegistrarUsuario(req, res) {
     }
 }
 
+async function login(req, res) {
+    const { email, password } = req.body;
+    try {
+        const result = await usuarioRepository.login(email, password);
+        if (result) {
+            Response.status = 200;
+            Response.message = 'Login exitoso';
+            Response.result = result;
+            res.status(200).send(
+                Response
+            )
+        } else {
+            Response.status = 404;
+            Response.message = 'No se encontraron resultados';
+            res.status(404).send(
+                Response
+            )
+        }
+    } catch (error) {
+        console.log("Error:", error)
+        Response.status = 500;
+        Response.message = 'Error al iniciar sesion';
+        Response.result = error;
+        res.status(500).send(
+            Response
+        )
+    }
+}
+
 async function ListarUsuarios(req, res) {
     try {
 
@@ -151,6 +180,7 @@ async function ActualizarByIdUsuario(req, res) {
 
 module.exports = {
     RegistrarUsuario,
+    login,
     ListarUsuarios,
     BuscarByDniUsuario,
     EliminarByIdUsuario,

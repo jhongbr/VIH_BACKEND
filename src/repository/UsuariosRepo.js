@@ -1,4 +1,5 @@
 const usuarioModel = require("../models/UsuariosModel");
+const bcrypt = require('bcrypt');
 
 //Metodos para los usuarios
 module.exports.createUsuario = async (usuario) => {
@@ -13,6 +14,22 @@ module.exports.createUsuario = async (usuario) => {
     }
   }
 };
+
+module.exports.login = async (email, password) => {
+  try {
+    const user = await usuarioModel.findOne({ email: email });
+    if (!user) {
+      throw new Error('El usuario no existe');
+    }
+    const isValid = await bcrypt.compare(password, user.password);
+    if (!isValid) {
+      throw new Error('Contraseña incorrecta');
+    }
+    return user
+  } catch (error) {
+    throw new Error('Error al iniciar sesion');
+  }
+}
 
 module.exports.ListUsuario = async () => {
   try {

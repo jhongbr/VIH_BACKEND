@@ -2,6 +2,7 @@ const chai = require("chai")
 const sinon = require('sinon');
 const { expect } = chai;
 chai.use(require("chai-string"))
+const bcrypt = require('bcrypt');
 
 const usuarioRespository = require('../src/repository/UsuariosRepo');
 const UsuarioModel = require('../src/models/UsuariosModel');
@@ -64,6 +65,47 @@ describe('Test de la clase de usuario ', () => {
         }
 
         UserSaveMock.verify();
+    });
+
+    it('debería lanzar un error si el usuario no existe', async () => {
+        sinon.stub(UsuarioModel, 'findOne').resolves(null); // Simula que no encuentra al usuario
+
+        try {
+            await usuarioRespository.login('test@test.com', 'password');
+        } catch (error) {
+            expect(error.message).to.equal('Error al iniciar sesion');
+        }
+    });
+
+    it('debería lanzar un error si la contraseña es incorrecta', async () => {
+        const user = { email: 'test@test.com', password: 'hashedpassword' };
+        sinon.stub(UsuarioModel, 'findOne').resolves(user); // Simula encontrar al usuario
+        sinon.stub(bcrypt, 'compare').resolves(false); // Simula que la contraseña es incorrecta
+
+        try {
+            await usuarioRespository.login('test@test.com', 'wrongpassword');
+        } catch (error) {
+            expect(error.message).to.equal('Error al iniciar sesion');
+        }
+    });
+
+    it('debería devolver el usuario si el login es exitoso', async () => {
+        const user = { email: 'test@test.com', password: 'hashedpassword' };
+        sinon.stub(UsuarioModel, 'findOne').resolves(user); // Simula encontrar al usuario
+        sinon.stub(bcrypt, 'compare').resolves(true); // Simula que la contraseña es correcta
+
+        const result = await usuarioRespository.login('test@test.com', 'password');
+        expect(result).to.deep.equal(user);
+    });
+
+    it('debería lanzar un error genérico si ocurre un problema durante el login', async () => {
+        sinon.stub(UsuarioModel, 'findOne').throws(new Error('Database error')); // Simula un error en la base de datos
+
+        try {
+            await usuarioRespository.login('test@test.com', 'password');
+        } catch (error) {
+            expect(error.message).to.equal('Error al iniciar sesion');
+        }
     });
 
     it('Deberia retornar todos los usuarios', async () => {
