@@ -14,7 +14,7 @@ module.exports.ListCitas = async () => {
   try {
     return await citasModel.find();
   } catch (error) {
-    throw new error('Erorr al listar las citas')
+    throw new Error('Error al listar las citas')
   }
 };
 
@@ -30,7 +30,7 @@ module.exports.FindByIdCitas = async (id) => {
   try {
     return await citasModel.findOne({ _id: id });
   } catch (err) {
-    throw new Error('Erorr al buscar la cita por id')
+    throw new Error('Error al buscar la cita por id')
   }
 };
 
@@ -38,7 +38,7 @@ module.exports.DeleteByIdCitas = async (id) => {
   try {
     return await citasModel.findByIdAndDelete({ _id: id });
   } catch (err) {
-    throw new Error('Erorr al eliminar la cita por id')
+    throw new Error('Error al eliminar la cita por id')
   }
 };
 

@@ -14,7 +14,7 @@ module.exports.ListAdmin = async () => {
   try {
     return await adminModel.find();
   } catch (error) {
-    throw new error('Erorr al listar los administradores')
+    throw new Error('Erorr al listar los administradores')
   }
 };
 
@@ -30,7 +30,7 @@ module.exports.DeleteByIdAdmin = async (id) => {
   try {
     return await adminModel.findByIdAndDelete({ _id: id });
   } catch (err) {
-    throw new Error('Erorr al eliminar el administrador por id')
+    throw new Error('Error al eliminar el administrador por id')
   }
 };
 

@@ -6,7 +6,7 @@ module.exports.createMedicos = async (medico) => {
   try {
     return await medico.save();
   } catch (error) {
-    throw new error('Erorr al crear el medico');
+    throw new Error('Erorr al crear el medico');
   }
 };
 
@@ -14,7 +14,7 @@ module.exports.ListMedicos = async () => {
   try {
     return await medicoModel.find();
   } catch (error) {
-    throw new error('Erorr al listar los medico')
+    throw new Error('Erorr al listar los medico')
   }
 };
 
@@ -38,7 +38,7 @@ module.exports.DeleteByIdMedicos = async (id) => {
   try {
     return await medicoModel.findByIdAndDelete({ _id: id });
   } catch (err) {
-    throw new Error('Erorr al eliminar el medico por id')
+    throw new Error('Error al eliminar el medico por id')
   }
 };
 

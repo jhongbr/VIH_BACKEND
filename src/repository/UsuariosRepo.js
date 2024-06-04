@@ -9,7 +9,7 @@ module.exports.createUsuario = async (usuario) => {
     if(err.code == 11000) {
       throw new Error('El usuario ya existe');
     }else{
-      throw new Error('Erorr al crear el usuario');
+      throw new Error('Error al crear el usuario');
     }
   }
 };
@@ -17,24 +17,16 @@ module.exports.createUsuario = async (usuario) => {
 module.exports.ListUsuario = async () => {
   try {
     return await usuarioModel.find();
-  } catch (error) {
-    throw new error('Erorr al listar los usuarios')
+  } catch (err) {
+    throw new Error('Error al listar los usuarios')
   }
 };
-
-/*module.exports.ListCitas = async () => {
-  try {
-    return await citasModel.find();
-  } catch (error) {
-    throw new error('Erorr al listar las citas')
-  }
-};*/
 
 module.exports.FindByDniUsuario = async (dni) => {
   try {
     return await usuarioModel.findOne({ dni: dni });
   } catch (err) {
-    throw new Error('Erorr al buscar el usuario por dni')
+    throw new Error('Error al buscar el usuario por dni')
   }
 };
 
@@ -43,13 +35,13 @@ module.exports.DeleteByIdUsuario = async (id) => {
     return await usuarioModel.findByIdAndDelete({ _id: id });
   } catch (err) {
     console.log({err});
-    throw new Error('Erorr al eliminar el usuario por id')
+    throw new Error('Error al eliminar el usuario por id')
   }
 };
 
 module.exports.UpdateUsuario = async (id, usuario) => {
   try {
-    return await usuarioModel.findByIdAndUpdate({ _id: id }, {
+    return await usuarioModel.findByIdAndUpdate({ id : id }, {
       name: usuario.name, lastname: usuario.lastname,email: usuario.email, password: usuario.password
     });
   } catch (err) {

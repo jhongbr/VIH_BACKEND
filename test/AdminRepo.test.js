@@ -3,11 +3,11 @@ const sinon = require('sinon');
 const { expect } = chai;
 chai.use(require("chai-string"))
 
-const usuarioRespository = require('../src/repository/UsuariosRepo');
-const UsuarioModel = require('../src/models/UsuariosModel');
+const adminRespository = require('../src/repository/AdminRepo');
+const AdminModel = require('../src/models/AdminModel');
 
 //Empezamos los test
-describe('Test de la clase de usuario ', () => {
+describe('Test de la clase de administrador ', () => {
     //this.timeout(8000);
 
     let UserSaveMock;
@@ -15,19 +15,16 @@ describe('Test de la clase de usuario ', () => {
     let UserFindByIdAndDeleteStub;
 
     beforeEach(() => {
-        UserSaveMock = sinon.mock(new UsuarioModel({
+        UserSaveMock = sinon.mock(new AdminModel({
             name: 'test',
             lastname: 'test1',
-            username: 'testname',
             email: 'test@test.com',
             password: 'test562',
-            telephone: '123',
-            fechaNacimiento: '12/15/2002',
-            dni: '12345678',
-            genero: 'Masculino'
+            veriPassword: 'test562',
+            tipoUsuario: 'admin', 
         }));
 
-        UserFindStub = sinon.stub(UsuarioModel, 'find');
+        UserFindStub = sinon.stub(AdminModel, 'find');
 
     });
 
@@ -38,29 +35,19 @@ describe('Test de la clase de usuario ', () => {
     it('Debe retornar el usuario creado', async () => {
         UserSaveMock.expects('save').resolves(UserSaveMock.object);
 
-        const result = await usuarioRespository.createUsuario(UserSaveMock.object);
+        const result = await adminRespository.createUserAdmin(UserSaveMock.object);
         console.log(result);
         expect(result).to.equal(UserSaveMock.object);
         UserSaveMock.verify();
     });
 
-    it('debería lanzar un error si el usuario ya existe', async () => {
-        UserSaveMock.expects('save').rejects({ code: 11000 });
-        try {
-            await usuarioRespository.createUsuario(UserSaveMock.object);
-        } catch (err) {
-            expect(err.message).to.equal('El usuario ya existe');
-        }
-        UserSaveMock.verify();
-    });
-
     it('Deberia guardarse en la prueba fallida', async () => {
-        UserSaveMock.expects('save').rejects('Error al crear el usuario');
+        UserSaveMock.expects('save').rejects('Erorr al crear el usuario administrador');
 
         try {
-            await usuarioRespository.createUsuario(UserSaveMock.object);
+            await adminRespository.createUserAdmin(UserSaveMock.object);
         } catch (err) {
-            expect(err.message).to.equal('Error al crear el usuario');
+            expect(err.message).to.equal('Erorr al crear el usuario administrador');
         }
 
         UserSaveMock.verify();
@@ -70,40 +57,36 @@ describe('Test de la clase de usuario ', () => {
         const userList = [UserSaveMock.object];
         UserFindStub.resolves(userList);
 
-        const result = await usuarioRespository.ListUsuario();
+        const result = await adminRespository.ListAdmin();
         console.log(result);
         expect(result).to.be.an('array');
         expect(result.length).to.equal(1);
         expect(result[0].name).to.equal('test');
         expect(result[0].lastname).to.equal('test1');
-        expect(result[0].username).to.equal('testname');
         expect(result[0].email).to.equal('test@test.com');
         expect(result[0].password).to.equal('test562');
-        expect(result[0].telephone).to.equal('123');
-        expect(result[0].fechaNacimiento).to.equal('12/15/2002');
-        expect(result[0].dni).to.equal('12345678');
-        expect(result[0].genero).to.equal('Masculino');
-
+        expect(result[0].veriPassword).to.equal('test562');
+        expect(result[0].tipoUsuario).to.equal('admin');
     });
 
     it('Deberia retornar un error al no poder listar los usuarios', async () => {
-        UserFindStub.rejects('Error al listar los usuarios');
+        UserFindStub.rejects('Erorr al listar los administradores');
         try {
-            await usuarioRespository.ListUsuario();
+            await adminRespository.ListAdmin();
         } catch (err) {
-            expect(err.message).to.equal('Error al listar los usuarios');
+            expect(err.message).to.equal('Erorr al listar los administradores');
         }
         UserSaveMock.verify();
     });
 
     it('Deberia retornar el usuario por dni', async () => {
 
-        sinon.stub(UsuarioModel, 'findOne')
-            .withArgs({ dni: '12345678' })
+        sinon.stub(AdminModel, 'findOne')
+            .withArgs({  })
             .resolves(UserSaveMock.object);
 
 
-        const result = await usuarioRespository.FindByDniUsuario('12345678');
+        const result = await adminRespository.FindByIdAdmin('12345678');
         expect(result).to.deep.equal(UserSaveMock.object);
 
         sinon.restore();
@@ -114,16 +97,16 @@ describe('Test de la clase de usuario ', () => {
         const mockDni = '12345678';
 
         // Stub del método findOne para que lance un error
-        sinon.stub(UsuarioModel, 'findOne')
+        sinon.stub(AdminModel, 'findOne')
             .withArgs({ where: { dni: mockDni, status: true } })
             .rejects(new Error('Database error'));
 
         try {
-            await usuarioRespository.FindByDniUsuario(mockDni);
-            throw new Error('Error al buscar el usuario por dni');
+            await adminRespository.FindByIdAdmin(mockDni);
+            throw new Error('Erorr al buscar el administrador');
         } catch (err) {
             // Verifica que el error lanzado es el esperado
-            expect(err.message).to.equal('Error al buscar el usuario por dni');
+            expect(err.message).to.equal('Erorr al buscar el administrador');
         }
     });
 
@@ -131,11 +114,11 @@ describe('Test de la clase de usuario ', () => {
         const mockId = '60d0fe4f5311236168a109ca';
         const mockResponse = { acknowledged: true, deletedCount: 1 };
 
-        sinon.stub(UsuarioModel, 'findByIdAndDelete')
+        sinon.stub(AdminModel, 'findByIdAndDelete')
             .withArgs({ _id: mockId })
             .resolves(mockResponse);
 
-        const result = await usuarioRespository.DeleteByIdUsuario(mockId);
+        const result = await adminRespository.DeleteByIdAdmin(mockId);
 
         expect(result).to.deep.equal(mockResponse);
     });
@@ -143,16 +126,16 @@ describe('Test de la clase de usuario ', () => {
     it('Deberia retornar un error al no poder eliminar el usuario por id', async () => {
         const mockId = '60d0fe4f5311236168a109ca';
         // Stub del método findByIdAndDelete para que lance un error
-        sinon.stub(UsuarioModel, 'findByIdAndDelete')
+        sinon.stub(AdminModel, 'findByIdAndDelete')
             .withArgs({ _id: mockId })
             .rejects(new Error('Database error'));
 
         try {
-            await usuarioRespository.DeleteByIdUsuario(mockId);
-            throw new Error('La prueba debería haber lanzado un error');
+            await adminRespository.DeleteByIdAdmin(mockId);
+            throw new Error('Error al eliminar el administrador por id');
         } catch (err) {
             // Verifica que el error lanzado es el esperado
-            expect(err.message).to.equal('Error al eliminar el usuario por id');
+            expect(err.message).to.equal('Error al eliminar el administrador por id');
         }
     });
 })

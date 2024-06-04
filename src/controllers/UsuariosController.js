@@ -67,25 +67,31 @@ async function ListarUsuarios(req, res) {
 }
 
 async function BuscarByDniUsuario(req, res) {
+
+    const dni = req.params['dni'];
     try {
-        const result = await usuarioRepository.FindByDniUsuario(Dni);
+        const result = await usuarioRepository.FindByDniUsuario(dni);
         if (result) {
             Response.status = 200;
             Response.message = 'Busqueda exitosa';
             Response.result = result;
+
+            res.status(200).send(
+                Response
+            )
         } else {
             Response.status = 404;
             Response.message = 'No se encontraron resultados';
-        }
 
-        res.status(200).sen(
-            Response
-        )
+            res.status(400).send(
+                Response
+            )
+        }
     } catch (error) {
         console.log("Error:", error)
         Response.status = 500;
         Response.message = 'Error al buscar el usuario por Dni';
-        Response.result = result;
+        Response.result = error;
     }
 
     res.status(500).send(
@@ -95,7 +101,7 @@ async function BuscarByDniUsuario(req, res) {
 
 async function EliminarByIdUsuario(req, res){
     
-    const id = req.params['id'];
+    const dni = req.params['id'];
     try {
         await usuarioRepository.DeleteByIdUsuario(id);
         Response.status = 200;
