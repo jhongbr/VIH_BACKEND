@@ -2,6 +2,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require('mongoose');
 require("dotenv").config();
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./swagger-output.json");
 const { MONGODB_URI } = process.env;
 
 const app = express();
@@ -39,6 +41,10 @@ app.get("/status", (req, res) => {
     message: "Servidor Corriendo",
   });
 });
+
+// Agregaremos esto a lo ultimo
+//Swagger
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 //Rutas
 
