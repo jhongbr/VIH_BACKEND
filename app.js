@@ -48,17 +48,12 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 //Rutas
 
-const admin_routes = require('./src/routers/AdminRouter');
-app.use('/api', admin_routes);
-
 const user_routes = require('./src/routers/UsuariosRouter');
 app.use('/api', user_routes);
 
-const citas_routes = require('./src/routers/CitasRouter');
+const citas_routes = require('./src/routers/MateriaRoute');
 app.use('/api', citas_routes);
 
-const medicos_routes = require('./src/routers/MedicosRouter');
-app.use('/api', medicos_routes);
 
 //Export
 module.exports = app;

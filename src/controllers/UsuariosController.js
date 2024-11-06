@@ -6,20 +6,12 @@ const usuarioRepository = require('../repository/UsuariosRepo');
 //Metodos para Usuarios
 async function RegistrarUsuario(req, res) {
 
-    const { name, lastname, username, email, password, telephone, fechaNacimiento,
-        dni, genero } = req.body;
+    const { email, password } = req.body;
     const usuario = new UsuarioModel();
 
     try {
-        usuario.name = name;
-        usuario.lastname = lastname;
-        usuario.username = username;
         usuario.email = email;
         usuario.password = password;
-        usuario.telephone = telephone;
-        usuario.fechaNacimiento = fechaNacimiento;
-        usuario.dni = dni;
-        usuario.genero = genero;
 
         const result = await usuarioRepository.createUsuario(usuario);
         Response.status = 201;

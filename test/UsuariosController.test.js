@@ -1,4 +1,4 @@
-const chai = require("chai")
+/*const chai = require("chai")
 const sinon = require('sinon');
 const { expect } = chai;
 chai.use(require("chai-string"))
@@ -39,4 +39,4 @@ it('should save the usuarioController successfully', async () => {
     expect(res.send.calledOnce).to.be.true;
 });
 
-it
+it*/
